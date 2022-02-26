@@ -8,14 +8,47 @@ body {
   margin: 0;
 }
 
+.error {
+  color: #f02849;
+  font-size: 13px;
+  font-family: sans-serif;
+  display: block;
+}
+
+.form {
+  width: 300px;
+  padding-bottom: 12px;
+}
+
+input {
+  height: 30px;
+  width: 100%;
+  margin: 12px 0 4px 0;
+  box-sizing: border-box;
+}
+
+.pwd {
+  width: 144px;
+}
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  margin-top: 12px;
+}
+
 .content {
-  height: calc(100vh - 46px);
+  min-height: calc(100vh - 46px);
 }
 
 .center {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 ul {
