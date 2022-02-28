@@ -11,26 +11,26 @@
   <nav>
     <ul>
       <?php if (isset($_SESSION['username'])) { ?>
-        <li>
+        <li class="<?php echo $GLOBALS['currentPage'] == 'home' ? 'active' : ''; ?>">
           <a href="/home">Homepage</a>
         </li>
         <li class="right">
           <a href="/logout">Logout</a>
         </li>
-        <li>
+        <li class="<?php echo $GLOBALS['currentPage'] == 'management' ? 'active' : ''; ?>">
           <a href="/management">Management</a>
         </li>
-        <li>
+        <li class="<?php echo $GLOBALS['currentPage'] == 'account' ? 'active' : ''; ?>">
           <a href="/account">My account: <?php echo $_SESSION['username']; ?></a>
         </li>
       <?php } else { ?>
-        <li>
+        <li class="<?php echo $GLOBALS['currentPage'] == 'home' ? 'active' : ''; ?>">
           <a href="/home">Homepage</a>
         </li>
-        <li class="right">
+        <li class="right <?php echo $GLOBALS['currentPage'] == 'register' ? 'active' : ''; ?>">
           <a href="/register">Register</a>
         </li>
-        <li class="right">
+        <li class="right <?php echo $GLOBALS['currentPage'] == 'login' ? 'active' : ''; ?>">
           <a href="/login">Login</a>
         </li>
       <?php } ?>

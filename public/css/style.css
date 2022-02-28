@@ -1,5 +1,10 @@
 a {
+  color: #0289ff;
   text-decoration: none;
+}
+
+.active {
+  background-color: rgb(21, 21, 21);
 }
 
 body {
@@ -34,6 +39,11 @@ input {
 .space-between {
   display: flex;
   justify-content: space-between;
+}
+
+.checkbox {
+  width: 13px;
+  height: 13px;
 }
 
 button {

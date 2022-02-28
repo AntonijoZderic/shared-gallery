@@ -73,4 +73,83 @@ class User
 
     return $errors;
   }
+
+  public function login()
+  {
+    if (isset($_COOKIE['remember'])) {
+      if (preg_match('/.{12}(:).{44}/', $_COOKIE['remember'])) {
+        list($selector, $authenticator) = explode(':', $_COOKIE['remember']);
+
+        $stmt = $this->db->prepare("SELECT `token`, `user_id` FROM `auth_tokens` WHERE `selector` = ?");
+        $stmt->bindValue(1, $selector);
+        $stmt->execute();
+
+        if ($token = $stmt->fetch()) {
+          if (hash_equals($token['token'], hash('sha256', base64_decode($authenticator)))) {
+            $stmt = $this->db->prepare("SELECT `username` FROM `users` WHERE `id` = ?");
+            $stmt->bindValue(1, $token['user_id']);
+            $stmt->execute();
+            
+            $user = $stmt->fetchColumn();
+            $_SESSION['username'] = $user;
+            $_SESSION['userId'] = $token['user_id'];
+          }
+        }
+      }
+    } else {
+      $errors = [
+        'emailErr' => '',
+        'pwdErr' => ''
+      ];
+
+      if (empty($_POST['email'])) {
+        $errors['emailErr'] = 'Email is required';
+      } else {
+        $email = trim($_POST['email']);
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          $errors['emailErr'] = 'Invalid email format';
+        }
+      }
+
+      if (empty($_POST['pwd'])) {
+        $errors['pwdErr'] = 'Password is required';
+      } elseif (!preg_match('/^(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])/', $_POST['pwd'])) {
+        $errors['pwdErr'] = 'Invalid password';
+      }
+
+      if (empty($errors['emailErr']) && empty($errors['pwdErr'])) {
+        $stmt = $this->db->prepare("SELECT `id`, `pwd`, `username` FROM `users` WHERE `email` = ?");
+        $stmt->bindValue(1, $email);
+        $stmt->execute();
+
+        if (!$user = $stmt->fetch()) {
+          $errors['emailErr'] = 'No account associated with the email address';
+        } elseif (password_verify($_POST['pwd'], $user['pwd'])) {
+          $_SESSION['username'] = $user['username'];
+          $_SESSION['userId'] = $user['id'];
+
+          if (!empty($_POST['remember'])) {
+            $selector = base64_encode(random_bytes(9));
+            $authenticator = random_bytes(33);
+        
+            setcookie('remember', $selector . ':' . base64_encode($authenticator), time() + 864000, '/');
+
+            $stmt = $this->db->prepare("INSERT INTO `auth_tokens` (`selector`, `token`, `user_id`, `expires`) VALUES (?, ?, ?, ?)");
+            $stmt->bindValue(1, $selector);
+            $stmt->bindValue(2, hash('sha256', $authenticator));
+            $stmt->bindValue(3, $user['id']);
+            $stmt->bindValue(4, date('Y-m-d H:i:s', time() + 864000));
+            $stmt->execute();
+          }
+
+          return;
+        } else {
+          $errors['pwdErr'] = 'Password incorrect';
+        }
+      }
+
+    return $errors;
+    }
+  }
 }
