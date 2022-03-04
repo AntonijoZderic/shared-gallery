@@ -80,7 +80,7 @@ li a {
 }
 
 li a:hover {
-  background-color: rgb(21, 21, 21);
+  background-color: rgb(40, 40, 40);
 }
 
 .right {
@@ -101,6 +101,7 @@ th {
 td {
   overflow-wrap: break-word;
   text-align: center;
+  padding: 10px 0 10px 0;
 }
 
 .image-th {
@@ -133,7 +134,7 @@ td {
   background-color: #f44336;
   border: none;
   color: white;
-  padding: 7px 8px;
+  padding: 5px 5px;
   font-size: 13px;
   margin: 0px;
   cursor: pointer;

@@ -152,4 +152,61 @@ class User
     return $errors;
     }
   }
+
+  public function changePwd()
+  {
+    $errors = [
+      'currPwdErr' => '',
+      'newPwdErr' => ''
+    ];
+
+    if (empty($_POST['currPwd'])) {
+      $errors['currPwdErr'] = 'Enter your password';
+    } elseif (!preg_match('/^(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])/', $_POST['currPwd'])) {
+      $errors['currPwdErr'] = 'Invalid password';
+    }
+    
+    if (empty($_POST['newPwd']) || empty($_POST['confirmPwd'])) {
+      $errors['newPwdErr'] = 'Enter a new password';
+    } elseif (!preg_match('/^(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])/', $_POST['newPwd'])) {
+      $errors['newPwdErr'] = 'Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter and 1 number';
+    } elseif ($_POST['newPwd'] != $_POST['confirmPwd']) {
+      $errors['newPwdErr'] = 'Passwords don\'t match';
+    }
+
+    if (empty($errors['currPwdErr']) && empty($errors['newPwdErr'])) {
+      $stmt = $this->db->prepare("SELECT `pwd` FROM `users` WHERE `id` = ?");
+      $stmt->bindValue(1, $_SESSION['userId']);
+      $stmt->execute();
+
+      $pwd = $stmt->fetchColumn();
+
+      if (password_verify($_POST['currPwd'], $pwd)) {
+        $newPwd = password_hash($_POST['newPwd'], PASSWORD_BCRYPT);
+
+        $stmt = $this->db->prepare("UPDATE `users` SET `pwd` = ? WHERE `id` = ?");
+        $stmt->bindValue(1, $newPwd);
+        $stmt->bindValue(2, $_SESSION['userId']);
+        $stmt->execute();
+
+        return;
+      } else {
+        $errors['currPwdErr'] = 'Password incorrect';
+      }
+    }
+    
+    return $errors;
+  }
+
+  public function deleteAcc()
+  {
+    $userId = $_SESSION['userId'];
+    $images = $this->db->query("SELECT `image` FROM `images` WHERE `user_id` = '$userId'")->fetchAll();
+
+    foreach ($images as $image) {
+      unlink(UPLOADS . $image['image']);
+    }
+
+    $this->db->query("DELETE FROM `users` WHERE `id` = '$userId'");
+  }
 }
