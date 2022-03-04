@@ -6,6 +6,15 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `images` (
+  `id` int(11) UNSIGNED AUTO_INCREMENT NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `image` varchar(27) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+);
+
 CREATE TABLE `auth_tokens` (
   `id` integer(11) UNSIGNED AUTO_INCREMENT NOT NULL,
   `selector` char(12),

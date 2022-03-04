@@ -1,4 +1,5 @@
 <IfModule mod_rewrite.c>
+  php_value upload_max_filesize 3M
   Options -Multiviews
   RewriteEngine On
   RewriteBase /public

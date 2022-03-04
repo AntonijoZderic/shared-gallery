@@ -7,4 +7,10 @@ class HomeController extends Controller
     $this->view('home');
     $this->view->render();
   }
+
+  public function getTotalImages()
+  {
+    $this->model('Image');
+    echo $this->model->getTotalImages();
+  }
 }
