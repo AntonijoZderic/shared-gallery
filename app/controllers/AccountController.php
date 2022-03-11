@@ -1,20 +1,21 @@
 <?php
 
+namespace app\controllers;
+
 class AccountController extends Controller
 {
   public function index($errors = null)
   {
-    $this->view('account', $errors);
-    $this->view->render();
+    $this->renderView('account', $errors);
   }
 
   public function changePwd()
   {
-    $this->model('User');
+    $this->model = new \app\models\User;
     $errors = $this->model->changePwd();
 
     if (!$errors) {
-      $logout = new LogoutController;
+      $logout = new \app\controllers\LogoutController;
       $logout->index();
     } else {
       $this->index($errors);
@@ -23,10 +24,10 @@ class AccountController extends Controller
 
   public function deleteAcc()
   {
-    $this->model('User');
+    $this->model = new \app\models\User;
     $this->model->deleteAcc();
 
-    $logout = new LogoutController;
+    $logout = new \app\controllers\LogoutController;
     $logout->index();
   }
 }

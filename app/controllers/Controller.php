@@ -1,17 +1,24 @@
 <?php
 
+namespace app\controllers;
+
 class Controller
 {
-  protected $view;
+  protected $data;
   protected $model;
 
-  public function model($model)
+  public function renderView($view, $data=[])
   {
-    $this->model = new $model;
-  }
+    $this->data = $data;
 
-  public function view($view, $data=[])
-  {
-    $this->view = new View($view, $data);
+    ob_start();
+
+    include ROOT . 'app' . DS . 'views' . DS . $view . '.php';
+    
+    $content = ob_get_contents();
+
+    ob_get_clean();
+
+    include ROOT . 'app' . DS . 'views' . DS . 'layout.php';
   }
 }

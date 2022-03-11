@@ -1,11 +1,13 @@
 <?php
 
+namespace app\core;
+
 class Router 
 {
   public static function route()
   {
     if (!isset($_SESSION['userId']) && !empty($_COOKIE['remember'])) {
-      $controller = 'LoginController';
+      $controller = 'app\\controllers\\LoginController';
       $action = 'login';
     } else {
       $request = trim($_SERVER['REQUEST_URI'], '/');
@@ -21,9 +23,9 @@ class Router
           exit();
         }
 
-        $controller = $url[0] . 'Controller';
+        $controller = 'app\\controllers\\' . $url[0] . 'Controller';
       } else {
-        $controller = 'HomeController';
+        $controller = 'app\\controllers\\HomeController';
         $GLOBALS['currentPage'] = 'home';
       }
 

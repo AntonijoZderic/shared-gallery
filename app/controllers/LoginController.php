@@ -1,16 +1,17 @@
 <?php
 
+namespace app\controllers;
+
 class LoginController extends Controller
 {
   public function index($errors = null)
   {
-    $this->view('login', $errors);
-    $this->view->render();
+    $this->renderView('login', $errors);
   }
 
   public function login()
   {
-    $this->model('User');
+    $this->model = new \app\models\User;
     $errors = $this->model->login();
 
     if (!$errors) {

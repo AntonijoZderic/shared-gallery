@@ -1,18 +1,18 @@
 <?php
 
+namespace app\controllers;
+
 class ManagementController extends Controller
 {
   public function __construct()
   {
-    $this->model('Image');
+    $this->model = new \app\models\Image;
   }
 
   public function index($errors = null)
   {
     $imageData = $this->model->getImages();
-  
-    $this->view('management', ['imageData' => $imageData, 'errors' => $errors]);
-    $this->view->render();
+    $this->renderView('management', ['imageData' => $imageData, 'errors' => $errors]);
   }
 
   public function upload()

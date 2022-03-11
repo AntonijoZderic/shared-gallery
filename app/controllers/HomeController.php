@@ -1,16 +1,17 @@
 <?php
 
+namespace app\controllers;
+
 class HomeController extends Controller
 {
   public function index()
   {
-    $this->view('home');
-    $this->view->render();
+    $this->renderView('home');
   }
 
   public function getTotalImages()
   {
-    $this->model('Image');
+    $this->model = new \app\models\Image;
     echo $this->model->getTotalImages();
   }
 }

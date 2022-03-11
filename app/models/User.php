@@ -1,12 +1,14 @@
 <?php
 
+namespace app\models;
+
 class User
 {
   private $db;
 
   public function __construct()
   {
-    $this->db = Db::getInstance();
+    $this->db = \app\core\Db::getInstance();
   }
 
   public function register()

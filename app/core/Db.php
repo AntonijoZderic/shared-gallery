@@ -1,6 +1,10 @@
 <?php
 
-class Db
+namespace app\core;
+use \PDO;
+use PDOException;
+
+final class Db
 {
   private $options = array(
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -10,9 +14,9 @@ class Db
   private $conf;
   private $dbh;
   
-  public function __construct()
+  private function __construct()
   {
-    $this->conf = require CONFIG . 'config.php';
+    $this->conf = require ROOT . 'app' . DS . 'config' . DS . 'config.php';
 
     try {
       $dsn = 'mysql:host=' . $this->conf['HOST'] . ';dbname=' . $this->conf['DB_NAME'];
@@ -25,7 +29,7 @@ class Db
           $this->dbh = new PDO($dsn, $this->conf['USER'], $this->conf['PASSWORD'], $this->options);
           $sql = 'CREATE DATABASE IF NOT EXISTS ' . $this->conf['DB_NAME'] . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
                   USE ' . $this->conf['DB_NAME'] . ';'
-                  .file_get_contents(CONFIG . 'db.sql');
+                  .file_get_contents(ROOT . 'app' . DS . 'config' . DS . 'db.sql');
 
           $this->dbh->exec($sql);
         } catch(PDOException $e) {
@@ -37,8 +41,8 @@ class Db
 
   public static function getInstance()
   {
-    if (!isset(self::$_instance)) {
-      self::$instance = new Db;
+    if (!isset(self::$instance)) {
+      self::$instance = new self();
     }
 
     return self::$instance->dbh;
